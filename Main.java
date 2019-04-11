@@ -22,10 +22,14 @@ public class Main {
         switch (state) {
             case 1:
                 playC();
+                playE();
+                playG();
                 sleep();
                 break;
             case 2:
                 playD();
+                playF();
+                playA();
                 sleep();
                 nextState = random.nextInt(2) + 1;
                 if (nextState == 1) {
@@ -38,6 +42,8 @@ public class Main {
                 break;
             case 3:
                 playE();
+                playG();
+                playB();
                 sleep();
                 nextState = random.nextInt(2) + 1;
                 if (nextState == 1) {
@@ -50,6 +56,8 @@ public class Main {
                 break;
             case 4:
                 playF();
+                playA();
+                playC();
                 sleep();
                 nextState = random.nextInt(4) + 1;
                 if (nextState == 1) {
@@ -66,6 +74,8 @@ public class Main {
                 break;
             case 5:
                 playG();
+                playB();
+                playD();
                 sleep();
                 nextState = random.nextInt(2) + 1;
                 if (nextState == 1) {
@@ -78,6 +88,8 @@ public class Main {
                 break;
             case 6:
                 playA();
+                playC();
+                playE();
                 sleep();
                 nextState = random.nextInt(3) + 1;
                 if (nextState == 1) {
@@ -92,6 +104,8 @@ public class Main {
                 break;
             case 7:
                 playB();
+                playD();
+                playF();
                 sleep();
                 nextState = random.nextInt(2) + 1;
                 if(nextState == 1){
