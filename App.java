@@ -43,9 +43,17 @@ public class App extends JFrame {
         SECOND_COLUMN_OFFSET = width / 5 * 2;
         THIRD_COLUMN_OFFSET = width / 5 * 3;
         FOURTH_COLUMN_OFFSET = width / 5 * 4;
+
+        setTitle(title);
+        setVisible(true);
+        setSize(width, height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void paint(Graphics g) {
+
+        super.paint(g);
+        g.setColor(Color.GRAY);
         super.paint(g);
 
         g.setColor(Color.GRAY);

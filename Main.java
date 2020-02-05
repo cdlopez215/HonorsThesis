@@ -1,7 +1,7 @@
 /**
  * Christian Lopez
- * CSE 355
- * 4/23/2019
+ * add minor notes
+ * blues stop on I
  */
 
 import javax.sound.sampled.AudioInputStream;
@@ -11,27 +11,35 @@ import java.io.File;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
+
 public class Main {
     Random random = new Random();
-    Chord chord = new Chord();
     App window = new App("POC", 600, 600);
-
-    int counter = 0;
-    final int MIN_NUM_CHORDS = 10;
+    Chord currentChord = new Chord();
+    Chord[] chords = new Chord[8];
+    String style = "Blues";
 
     public static void main(String[] args) {
         Main object = new Main();
-        object.generateString(3);
+        object.buildChords();
+        object.generateString();
+        object.listenToMic();
     }
 
+    //Chord object
     final class Chord {
         private int state = 3;
         private int root = 3;
         private int third = 5;
         private int fifth = 7;
+        private boolean[] canGoTo = new boolean[8];
 
         public void playChord() {
-            counter++;
             playSound(root);
             playSound(third);
             playSound(fifth);
@@ -39,150 +47,165 @@ public class Main {
         }
     }
 
-    //Chooses next chord to progress to
-    public void generateString(int state) {
-        int nextState;
-        System.out.println();
+    //create all chords and store in chords[]
+    public void buildChords(){
+        Chord firstChord = new Chord();
+        firstChord.state = 1;
+        firstChord.root = 1;
+        firstChord.third = 3;
+        firstChord.fifth = 5;
 
-        switch (state) {
-            case 1:
-                window.chord = 1;
-                window.repaint();
-                chord.playChord();
+        Chord secondChord = new Chord();
+        secondChord.state = 2;
+        secondChord.root = 2;
+        secondChord.third = 4;
+        secondChord.fifth = 6;
+
+        Chord thirdChord = new Chord();
+        thirdChord.state = 3;
+        thirdChord.root = 3;
+        thirdChord.third = 5;
+        thirdChord.fifth = 7;
+
+        Chord fourthChord = new Chord();
+        fourthChord.state = 4;
+        fourthChord.root = 4;
+        fourthChord.third = 6;
+        fourthChord.fifth = 1;
+
+        Chord fifthChord = new Chord();
+        fifthChord.state = 5;
+        fifthChord.root = 5;
+        fifthChord.third = 7;
+        fifthChord.fifth = 1;
+
+        Chord sixthChord = new Chord();
+        sixthChord.state = 6;
+        sixthChord.root = 6;
+        sixthChord.third = 1;
+        sixthChord.fifth = 3;
+        Chord seventhChord = new Chord();
+        seventhChord.state = 7;
+        seventhChord.root = 7;
+        seventhChord.third = 2;
+        seventhChord.fifth = 4;
+
+        currentChord = thirdChord;
+        chords[0] = firstChord;
+        chords[1] = secondChord;
+        chords[2] = thirdChord;
+        chords[3] = fourthChord;
+        chords[4] = fifthChord;
+        chords[5] = sixthChord;
+        chords[6] = seventhChord;
+
+        adjustChords();
+    }
+
+    //define relationships
+    public void adjustChords(){
+        switch(style) {
+            case "Classical":
+                currentChord = chords[2];
+                chords[1].canGoTo[4] = true;
+                chords[1].canGoTo[6] = true;
+                chords[2].canGoTo[5] = true;
+                chords[3].canGoTo[4] = true;
+                chords[3].canGoTo[6] = true;
+                chords[4].canGoTo[0] = true;
+                chords[4].canGoTo[2] = true;
+                chords[5].canGoTo[1] = true;
+                chords[5].canGoTo[3] = true;
+                chords[6].canGoTo[0] = true;
+                chords[6].canGoTo[2] = true;
                 break;
-            case 2:
-                window.chord = 2;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(2) + 1;
-
-                if (nextState == 1) {
-                    assignState(3);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(5);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
+            case "ClassicalMinor":
+                currentChord = chords[2];
+                chords[1].canGoTo[4] = true;
+                chords[1].canGoTo[6] = true;
+                chords[2].canGoTo[5] = true;
+                chords[3].canGoTo[4] = true;
+                chords[3].canGoTo[6] = true;
+                chords[4].canGoTo[0] = true;
+                chords[4].canGoTo[2] = true;
+                chords[5].canGoTo[1] = true;
+                chords[5].canGoTo[3] = true;
+                //chords[6].canGoTo[0] = true;
+                chords[6].canGoTo[2] = true;
+                //gotta edit sounds to add minors
                 break;
-            case 3:
-                window.chord = 3;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(3) + 1;
-                if (nextState == 1) {
-                    assignState(2);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(4);
-                    generateString(chord.state);
-                } else if (nextState == 3) {
-                    assignState(6);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
+            case "Jazz":
+                currentChord = chords[2];
+                chords[2].canGoTo[5] = true;
+                chords[5].canGoTo[1] = true;
+                chords[1].canGoTo[4] = true;
+                chords[4].canGoTo[0] = true;
                 break;
-            case 4:
-                window.chord = 4;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(4) + 1;
-
-                while (nextState == 1 && counter < MIN_NUM_CHORDS) {
-                    nextState = random.nextInt(4) + 1;
-                }
-
-                if (nextState == 1) {
-                    assignState(1);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(2);
-                    generateString(chord.state);
-                } else if (nextState == 3) {
-                    assignState(3);
-                    generateString(chord.state);
-                } else if (nextState == 4) {
-                    assignState(5);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
+            case "Blues":
+                currentChord = chords[0];
+                chords[0].canGoTo[3] = true;
+                chords[3].canGoTo[0] = true;
+                chords[0].canGoTo[4] = true;
+                chords[4].canGoTo[3] = true;
+                chords[4].canGoTo[0] = true;
                 break;
-            case 5:
-                window.chord = 5;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(2) + 1;
-
-                while (nextState == 1 && counter < MIN_NUM_CHORDS) {
-                    nextState = random.nextInt(2) + 1;
-                }
-
-                if (nextState == 1) {
-                    assignState(1);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(6);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
-                break;
-            case 6:
-                window.chord = 6;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(2) + 1;
-                if (nextState == 1) {
-                    assignState(2);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(4);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
-                break;
-            case 7:
-                window.chord = 7;
-                window.repaint();
-                chord.playChord();
-                nextState = random.nextInt(2) + 1;
-
-                while (nextState == 1 && counter < MIN_NUM_CHORDS) {
-                    nextState = random.nextInt(2) + 1;
-                }
-
-                if (nextState == 1) {
-                    assignState(1);
-                    generateString(chord.state);
-                } else if (nextState == 2) {
-                    assignState(3);
-                    generateString(chord.state);
-                } else {
-                    error();
-                }
+            default:
                 break;
         }
     }
 
-    //Assigns other notes in chord
-    void assignState(int state) {
-        chord.state = state;
-        chord.root = state;
-        if (state <= 5) {
-            chord.third = state + 2;
-        } else {
-            chord.third = state - 5;
-        }
 
-        if (state <= 3) {
-            chord.fifth = state + 4;
-        } else {
-            chord.fifth = state - 3;
+    public void listenToMic(){
+
+        AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
+
+        DataLine.Info targetInfo = new DataLine.Info(TargetDataLine.class, format);
+        DataLine.Info sourceInfo = new DataLine.Info(SourceDataLine.class, format);
+
+        try {
+            TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
+            targetLine.open(format);
+            targetLine.start();
+
+            SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
+            sourceLine.open(format);
+            sourceLine.start();
+
+            int numBytesRead;
+            byte[] targetData = new byte[targetLine.getBufferSize() / 5];
+
+            while (true) {
+                numBytesRead = targetLine.read(targetData, 0, targetData.length);
+
+                if (numBytesRead == -1)	break;
+
+                sourceLine.write(targetData, 0, numBytesRead);
+            }
         }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public void generateString(){
+        int rand = 0;
+        do{
+
+            window.chord = currentChord.state;
+            window.repaint();
+            currentChord.playChord();
+
+            boolean next = false;
+            while(!next) {
+                rand = random.nextInt(chords.length);
+                next = currentChord.canGoTo[rand];
+            }
+            currentChord = chords[rand];
+        }while(currentChord.state != 1);
+
+        window.chord = currentChord.state;
+        window.repaint();
+        currentChord.playChord();
     }
 
     //Calls individual methods for playing sound files
@@ -225,9 +248,21 @@ public class Main {
         playFile(note);
     }
 
+    void playBb() {
+        System.out.println("Bb");
+        String note = "Bb";
+        playFile(note);
+    }
+
     void playC() {
         System.out.println("C");
         String note = "C";
+        playFile(note);
+    }
+
+    void playCs() {
+        System.out.println("C#");
+        String note = "C#";
         playFile(note);
     }
 
@@ -243,15 +278,33 @@ public class Main {
         playFile(note);
     }
 
+    void playEb() {
+        System.out.println("Eb");
+        String note = "Eb";
+        playFile(note);
+    }
+
     void playF() {
         System.out.println("F");
         String note = "F";
         playFile(note);
     }
 
+    void playFs() {
+        System.out.println("F#");
+        String note = "F#";
+        playFile(note);
+    }
+
     void playG() {
         System.out.println("G");
         String note = "G";
+        playFile(note);
+    }
+
+    void playGs() {
+        System.out.println("G#");
+        String note = "G#";
         playFile(note);
     }
 
@@ -269,9 +322,23 @@ public class Main {
 
     //Actually plays sound files
     void playFile(String note) {
+        if(style == "ClassicalMinor"){
+            switch(note){
+                case "E":
+                    note = "Eb";
+                    break;
+                case "A":
+                    note = "G#";
+                    break;
+                case "B":
+                    note = "Bb";
+                    break;
+                default:
+                    break;
+            }
+        }
         try {
-            File soundFile = new File("C:\\Users\\Christian\\IdeaProjects\\BonusProject\\src\\" + note + ".wav");
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource(note + ".wav"));
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.start();
