@@ -1,7 +1,7 @@
 /**
  * Christian Lopez
- * CSE 355
- * 4/23/2019
+ * Dhantin Kumar
+ * Spring 2020
  */
 
 import javax.swing.*;

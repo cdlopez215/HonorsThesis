@@ -1,7 +1,7 @@
 /**
  * Christian Lopez
- * add minor notes
- * blues stop on I
+ * Dhantin Kumar
+ * Spring 2020
  */
 
 import javax.sound.sampled.AudioInputStream;
@@ -19,10 +19,10 @@ import javax.sound.sampled.TargetDataLine;
 
 public class Main {
     Random random = new Random();
-    App window = new App("POC", 600, 600);
+    App window = new App("Thesis", 600, 600);
     Chord currentChord = new Chord();
     Chord[] chords = new Chord[8];
-    String style = "Blues";
+    String style = "Classical";
 
     public static void main(String[] args) {
         Main object = new Main();
@@ -84,6 +84,7 @@ public class Main {
         sixthChord.root = 6;
         sixthChord.third = 1;
         sixthChord.fifth = 3;
+        
         Chord seventhChord = new Chord();
         seventhChord.state = 7;
         seventhChord.root = 7;
@@ -154,6 +155,37 @@ public class Main {
         }
     }
 
+    public void addRule(Chord originChord, int destChord){
+        boolean temp = chords[originChord.root].canGoTo[destChord];
+
+        if(!temp) {
+            chords[originChord.root].canGoTo[destChord] = true;
+        } else {
+            //error
+        }
+    }
+
+    public void removeRule(Chord originChord, int destChord){
+        boolean temp = chords[originChord.root].canGoTo[destChord];
+
+        if(temp) {
+            chords[originChord.root].canGoTo[destChord] = false;
+        } else {
+            //error
+        }
+    }
+
+    public void removeChord(Chord chord){
+        for(int i = 0; i < chords.length; i++){
+            chords[i].canGoTo[chord.root] = false;
+        }
+    }
+
+    public void addChord(Chord chord){
+        for(int i = 0; i < chords.length; i++){
+            chords[i].canGoTo[chord.root] = false;
+        }
+    }
 
     public void listenToMic(){
 
@@ -334,6 +366,12 @@ public class Main {
                     note = "Bb";
                     break;
                 default:
+                    break;
+            }
+        } else if (style == "Jazz" && currentChord == chords[2]){
+            switch(note) {
+                case "G":
+                    note = "F#";
                     break;
             }
         }
