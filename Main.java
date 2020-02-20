@@ -11,12 +11,12 @@
  *
  * Remove keys not in user selected key
  * Maybe add a start button and variable number of chords?
+ * Last note repeats when after method resolve()
  */
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.util.Random;
@@ -25,13 +25,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Main {
+
+    //variable declaration
     Random random = new Random();
     App window = new App();
-    Piano keyboard = new Piano();
     Chord currentChord, nextChord = new Chord();
+    Piano keyboard = new Piano();
+
     int currentNote, nextNote;
     Chord[] chords = new Chord[8];
-    String style = "Classical";
     long timeDelay = 1;
     Transposition transpose = new Transposition();
     int timeVar;
@@ -44,11 +46,15 @@ public class Main {
     public static void main(String[] args) {
         Main object = new Main();
         object.buildChords();
-        //object.generateString();
         object.generateStringFromInput();
     }
 
-    //Chord object
+    /**
+     * Contains information about notes in chord, which group of chords each is able to go to
+     * Contains playChord() method that doesn't actually make sound
+     * playChord() creates mediaPlayers for each note in the chord, adds the mediaPlayers to an ArrayList,
+     * and adds that ArrayList to another ArrayList ("queue") for playback without delay
+     */
     final class Chord {
         private int state = 3;
         private int root = 3;
@@ -76,7 +82,13 @@ public class Main {
         }
     }
 
-    //create all chords and store in chords[]
+    /**
+     * Builds chords[], an array of the 8 chords present in each key
+     * Each index of chords[] is a single chord with 4 notes defined - root, third, fifth, and state (the melody note, not always the root)
+     *
+     * chords[] remains unchanged regardless of key
+     * Transpositions are considered in Transposition.java
+     */
     public void buildChords(){
         Chord firstChord = new Chord();
         firstChord.state = 1;
@@ -132,8 +144,13 @@ public class Main {
         adjustChords();
     }
 
-    //define relationships
+    /**
+     * Define relationships between each key
+     * These are the templates or presets users can choose from
+     */
     public void adjustChords(){
+        String style = keyboard.getStyle();
+
         switch(style) {
             case "Classical":
                 currentChord = chords[2];
@@ -188,6 +205,13 @@ public class Main {
         }
     }
 
+    /**
+     * Methods for use with front end
+     * Untested
+     *
+     * @param originChord
+     * @param destChord
+     */
     public void addRule(Chord originChord, int destChord){
         boolean temp = chords[originChord.root].canGoTo[destChord];
 
@@ -225,27 +249,16 @@ public class Main {
         timeDelay = time;
     }
 
-    public void generateString(){
-        int rand = 0;
-        do{
-
-            window.chord = currentChord.state;
-            window.repaint();
-            currentChord.playChord();
-
-            boolean next = false;
-            while(!next) {
-                rand = random.nextInt(chords.length);
-                next = currentChord.canGoTo[rand];
-            }
-            currentChord = chords[rand];
-        }while(currentChord.state != 1);
-
-        window.chord = currentChord.state;
-        window.repaint();
-        currentChord.playChord();
-    }
-
+    /**
+     * Replaced generateString() from Version 1.0
+     *
+     * The user-entered melody is stored in Piano.notesEntered
+     * The 0th index represents the 1st note, 1st index represents 2nd note, etc
+     * The first chord is assigned by hard-coding
+     * Next chords are sent to checkNextChord which returns either true or false, depending on if there is at least 1 possible chord to move to that contains the melody note
+     * If true, global Chord variable nextChord is updated
+     * If false, the next note is stored in the audio queue as a pickup note to the next chord and nextNextChord is called, which checks the same rules for the following note
+     */
     public void generateStringFromInput(){
         while(true) {
             while (!Piano.entered) {
@@ -342,6 +355,10 @@ public class Main {
         }
     }
 
+    /**
+     * Plays MediaPlayer queue
+     * Audio is broken up without it
+     */
     public void playQueue(){
         timeVar = Piano.timeVar / 60;
 
@@ -353,6 +370,10 @@ public class Main {
         }
     }
 
+    /**
+     * If a melody can't or doesn't resolve on its own, resolve() is called
+     * Finds a path from currentChord to the resolution
+     */
     public void resolve(){
         int rand = 0;
         boolean next = false;
@@ -372,6 +393,16 @@ public class Main {
         }
     }
 
+    /**
+     * Compares next note to canGoTo values of the current Chord
+     * Returns true if at least one valid chord progression option
+     * Also updates global Chord variable nextChord, used after resolve() method call
+     * Returns false if 0 options
+     *
+     * @param current
+     * @param next
+     * @return
+     */
     public boolean checkNextChord(Chord current, int next){
         int rand = 0;
         boolean returnValue = false;
@@ -398,6 +429,11 @@ public class Main {
         return returnValue;
     }
 
+    /**
+     * Used to store melody note in mediaPlayer alongside rest of chord
+     * Separate from playSound() because of a higher octave and higher volume
+     * @param note
+     */
     public void playMelody(int note){
         String noteName;
 
@@ -409,14 +445,15 @@ public class Main {
             mediaPlayer.setVolume(100);
 
             players.add(mediaPlayer);
-
-            //mediaPlayer.play();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //Calls individual methods for playing sound files
+    /**
+     * Used to store individual notes of a chord in players, an ArrayList inside queue
+     * @param note
+     */
     void playSound(int note) {
 
         String noteName = transpose.findNoteName(note);
@@ -434,6 +471,10 @@ public class Main {
         }
     }
 
+    /**
+     * Used to store pickup notes in queue
+     * @param next
+     */
     void addSingleNote(int next){
         String noteName = transpose.findNoteName(next);
         players = new ArrayList<MediaPlayer>();
@@ -455,6 +496,12 @@ public class Main {
         System.out.print("ERROR");
     }
 
+    /**
+     * Adjusts time delay
+     * Responds to user input and pickup notes
+     * Checks for two pickups
+     * @param index
+     */
     void sleep(int index) {
         try {
             if(index == 0 || index == queue.size()){
@@ -477,6 +524,9 @@ public class Main {
         }
     }
 
+    /**
+     * Only used in while loop waiting for user input
+     */
     void sleep() {
         try {
             TimeUnit.SECONDS.sleep(1);

@@ -1,7 +1,24 @@
+/**
+ * Christian Lopez
+ * Dhantin Kumar
+ * Spring 2020
+ *
+ * Transposition logic
+ * Only two methods - findNoteName() and findMelodyNoteName()
+ */
+
 public class Transposition {
 
     Piano keyboard = new Piano();
 
+    /**
+     * Used to find proper note name to return to Main.playSound()
+     * Checks key and style from Piano.java
+     * First checks for key - (if(key == 0))
+     * Followed by switch statement to find proper note and print to console
+     * @param note
+     * @return
+     */
     public String findNoteName(int note){
         String noteName = "";
         int key = keyboard.getKey();
@@ -22,7 +39,6 @@ public class Transposition {
                     if(style.equals("Classical")){
                         noteName = "e4";
                     } else {
-                        System.out.println("minor");
                         noteName = "d-4";
                     }
                     break;
@@ -529,6 +545,16 @@ public class Transposition {
         return noteName;
     }
 
+    /**
+     *  Used to find proper note name to return to Main.playMelody()
+     *  Checks key and style from Piano.java
+     *  First checks for key - (if(key == 0))
+     *  Followed by switch statement to find proper note and print to console
+     *
+     *  Differs from findNoteName() because these notes are one octave higher
+     * @param note
+     * @return
+     */
     public String findMelodyNoteName(int note){
         String noteName = "";
         int key = keyboard.getKey();
