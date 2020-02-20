@@ -458,17 +458,17 @@ public class Main {
     void sleep(int index) {
         try {
             if(index == 0 || index == queue.size()){
-                timeDelay = timeVar * 500;
+                timeDelay = 1000 / timeVar;
             } else if (index != queue.size()-1 && queue.get(index + 1).size() == 1){
                 if(index != queue.size()-2 && queue.get(index + 2).size() == 1){
-                    timeDelay = timeVar * 250;
+                    timeDelay = 500 / timeVar;
                 } else {
-                    timeDelay = timeVar * 375;
+                    timeDelay = 750 / timeVar;
                 }
             } else if (queue.get(index).size() == 1){
-                timeDelay = timeVar * 125;
+                timeDelay = 500 / timeVar;
             } else {
-                timeDelay = timeVar * 500;
+                timeDelay = 1000 / timeVar;
             }
 
             TimeUnit.MILLISECONDS.sleep(timeDelay);

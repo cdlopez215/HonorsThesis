@@ -313,35 +313,35 @@ public class Piano implements ActionListener {
 
             JButton jb1 = new JButton(img);
             jb1.setName("C-5");
-            jb1.setActionCommand("C-4");
+            jb1.setActionCommand("C-5");
             jb1.addActionListener(this);
 
             JButton jb2 = new JButton(img);
             jb2.setName("D-5");
-            jb2.setActionCommand("D-4");
+            jb2.setActionCommand("D-5");
             jb2.addActionListener(this);
 
             JButton jb3 = new JButton(img);
-            jb3.setName("E-5");
-            jb3.setActionCommand("E-4");
+            jb3.setName("F-5");
+            jb3.setActionCommand("F-5");
             jb3.addActionListener(this);
 
             JButton jb4 = new JButton(img);
-            jb4.setName("G-4");
-            jb4.setActionCommand("G-4");
+            jb4.setName("G-5");
+            jb4.setActionCommand("G-5");
             jb4.addActionListener(this);
 
             // Place the 5 keys
             jb0.setBounds(20+(x),y,25, 65);
             keyBoard.add(jb0,new Integer(2));
 
-            jb1.setBounds(130+(x),y,25,65);
+            jb2.setBounds(130+(x),y,25,65);
             keyBoard.add(jb1,new Integer(2));
 
-            jb2.setBounds(170+(x),y,25,65);
+            jb3.setBounds(200+(x),y,25,65);
             keyBoard.add(jb2,new Integer(2));
 
-            jb3.setBounds(90+(x),y,25,65);
+            jb1.setBounds(90+(x),y,25,65);
             keyBoard.add(jb3,new Integer(2));
 
             jb4.setBounds(240+(x),y,25,65);
@@ -409,10 +409,16 @@ public class Piano implements ActionListener {
                         playFile("c5");
                         numNotes++;
                         break;
+                    case ("C-5"):
+                        playFile("c-5");
+                        break;
                     case ("D5"):
                         notesEntered[numNotes] = 2;
                         playFile("d5");
                         numNotes++;
+                        break;
+                    case ("D-5"):
+                        playFile("d-5");
                         break;
                     case ("E5"):
                         notesEntered[numNotes] = 3;
@@ -424,20 +430,32 @@ public class Piano implements ActionListener {
                         playFile("f5");
                         numNotes++;
                         break;
+                    case ("F-5"):
+                        playFile("f-5");
+                        break;
                     case ("G5"):
                         notesEntered[numNotes] = 5;
                         playFile("g5");
                         numNotes++;
+                        break;
+                    case ("G-5"):
+                        playFile("g-5");
                         break;
                     case ("A4"):
                         notesEntered[numNotes] = 6;
                         playFile("a5");
                         numNotes++;
                         break;
+                    case ("A-4"):
+                        playFile("a-5");
+                        break;
                     case ("B4"):
                         notesEntered[numNotes] = 7;
                         playFile("b5");
                         numNotes++;
+                        break;
+                    case ("B-4"):
+                        playFile("b-5");
                         break;
                     default:
                         break;
