@@ -1,6 +1,3 @@
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -469,7 +466,7 @@ public class Piano implements ActionListener {
      */
     void clearSound(){
         try {
-            String bip = "a4.wav";
+            String bip = "blank.wav";
             Clip clip = AudioSystem.getClip();
             clip.open(AudioSystem.getAudioInputStream(new File(bip)));
             clip.start();
