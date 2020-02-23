@@ -2,36 +2,51 @@
  * Christian Lopez
  * Dhantin Kumar
  * Spring 2020
+ *
+ * Elaborate styles
+ * Different voices
+ *
+ * Remove keys not in user selected key
  */
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
+
+    //variable declaration
     Random random = new Random();
-    App window = new App("Thesis", 600, 600);
-    Chord currentChord = new Chord();
+    App window = new App();
+    Chord currentChord, nextChord = new Chord();
+    Piano keyboard = new Piano();
+
+    int currentNote, nextNote;
     Chord[] chords = new Chord[8];
-    String style = "Classical";
+    long timeDelay = 1;
+    Transposition transpose = new Transposition();
+    int timeVar;
+    int numPass = 0;
+
+    List<Clip> players = new ArrayList<Clip>();
+    ArrayList<List<Clip>> queue = new ArrayList<List<Clip>>();
 
     public static void main(String[] args) {
         Main object = new Main();
         object.buildChords();
-        object.generateString();
-        object.listenToMic();
+        object.generateStringFromInput();
     }
 
-    //Chord object
+    /**
+     * Contains information about notes in chord, which group of chords each is able to go to
+     * Contains playChord() method that doesn't actually make sound
+     * playChord() creates mediaPlayers for each note in the chord, adds the mediaPlayers to an ArrayList,
+     * and adds that ArrayList to another ArrayList ("queue") for playback without delay
+     */
     final class Chord {
         private int state = 3;
         private int root = 3;
@@ -40,14 +55,28 @@ public class Main {
         private boolean[] canGoTo = new boolean[8];
 
         public void playChord() {
+            players = new ArrayList<Clip>();
+
+            System.out.println("\n");
             playSound(root);
+            System.out.print(" ");
             playSound(third);
+            System.out.print(" ");
             playSound(fifth);
-            sleep();
+            System.out.println();
+            playMelody(currentNote);
+
+            queue.add(players);
         }
     }
 
-    //create all chords and store in chords[]
+    /**
+     * Builds chords[], an array of the 8 chords present in each key
+     * Each index of chords[] is a single chord with 4 notes defined - root, third, fifth, and state (the melody note, not always the root)
+     *
+     * chords[] remains unchanged regardless of key
+     * Transpositions are considered in Transposition.java
+     */
     public void buildChords(){
         Chord firstChord = new Chord();
         firstChord.state = 1;
@@ -77,7 +106,7 @@ public class Main {
         fifthChord.state = 5;
         fifthChord.root = 5;
         fifthChord.third = 7;
-        fifthChord.fifth = 1;
+        fifthChord.fifth = 2;
 
         Chord sixthChord = new Chord();
         sixthChord.state = 6;
@@ -103,13 +132,19 @@ public class Main {
         adjustChords();
     }
 
-    //define relationships
+    /**
+     * Define relationships between each key
+     * These are the templates or presets users can choose from
+     */
     public void adjustChords(){
+        String style = keyboard.getStyle();
+
         switch(style) {
             case "Classical":
-                currentChord = chords[2];
                 chords[1].canGoTo[4] = true;
                 chords[1].canGoTo[6] = true;
+                chords[2].canGoTo[1] = true;
+                chords[2].canGoTo[3] = true;
                 chords[2].canGoTo[5] = true;
                 chords[3].canGoTo[4] = true;
                 chords[3].canGoTo[6] = true;
@@ -121,9 +156,10 @@ public class Main {
                 chords[6].canGoTo[2] = true;
                 break;
             case "ClassicalMinor":
-                currentChord = chords[2];
                 chords[1].canGoTo[4] = true;
                 chords[1].canGoTo[6] = true;
+                chords[2].canGoTo[1] = true;
+                chords[2].canGoTo[3] = true;
                 chords[2].canGoTo[5] = true;
                 chords[3].canGoTo[4] = true;
                 chords[3].canGoTo[6] = true;
@@ -133,7 +169,6 @@ public class Main {
                 chords[5].canGoTo[3] = true;
                 //chords[6].canGoTo[0] = true;
                 chords[6].canGoTo[2] = true;
-                //gotta edit sounds to add minors
                 break;
             case "Jazz":
                 currentChord = chords[2];
@@ -155,11 +190,19 @@ public class Main {
         }
     }
 
+    /**
+     * Methods for use with front end
+     * Untested
+     *
+     * @param originChord
+     * @param destChord
+     */
     public void addRule(Chord originChord, int destChord){
         boolean temp = chords[originChord.root].canGoTo[destChord];
 
         if(!temp) {
             chords[originChord.root].canGoTo[destChord] = true;
+            //change current chord - maybe add return value Chord?
         } else {
             //error
         }
@@ -187,200 +230,290 @@ public class Main {
         }
     }
 
-    public void listenToMic(){
+    public void changeTempo(int time){
+        timeDelay = time;
+    }
 
-        AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
+    /**
+     * Replaced generateString() from Version 1.0
+     *
+     * The user-entered melody is stored in Piano.notesEntered
+     * The 0th index represents the 1st note, 1st index represents 2nd note, etc
+     * The first chord is assigned by hard-coding
+     * Next chords are sent to checkNextChord which returns either true or false, depending on if there is at least 1 possible chord to move to that contains the melody note
+     * If true, global Chord variable nextChord is updated
+     * If false, the next note is stored in the audio queue as a pickup note to the next chord and nextNextChord is called, which checks the same rules for the following note
+     */
+    public void generateStringFromInput(){
+        while(true) {
+            while (!Piano.entered) {
+                sleep();
+            }
 
-        DataLine.Info targetInfo = new DataLine.Info(TargetDataLine.class, format);
-        DataLine.Info sourceInfo = new DataLine.Info(SourceDataLine.class, format);
+            currentNote = Piano.notesEntered[0];
+            nextNote = Piano.notesEntered[1];
+
+            switch (currentNote) {
+                case 1:
+                    currentChord = chords[5];
+                    break;
+                case 2:
+                    currentChord = chords[1];
+                    break;
+                case 3:
+                    currentChord = chords[2];
+                    break;
+                case 4:
+                    currentChord = chords[3];
+                    break;
+                case 5:
+                    currentChord = chords[2];
+                    break;
+                case 6:
+                    currentChord = chords[5];
+                    break;
+                case 7:
+                    currentChord = chords[2];
+                    break;
+            }
+
+            for (int i = 0; i < Piano.numNotes; i++) {
+                currentNote = Piano.notesEntered[i];
+
+                if (i < Piano.numNotes - 1) {
+                    nextNote = Piano.notesEntered[i + 1];
+                } else if (i == Piano.numNotes-1) {
+                    if (currentNote == 1 || currentNote == 3 || currentNote == 5) {
+                        currentChord = chords[0];
+                        currentChord.playChord();
+                        break;
+                    } else {
+                        resolve();
+                        System.out.print("\n\n***********");
+                        i = Piano.numNotes;
+                    }
+                }
+
+                boolean nextBool = false;
+                int skipCounter = 0;
+
+                currentChord.playChord();
+
+                while(!nextBool){
+                    nextBool = checkNextChord(currentChord, nextNote);
+                    if(!nextBool){
+                        currentChord.canGoTo[nextNote-1] = true; //should be i, not nextNote-1 //test this
+                        skipCounter++;
+                            if(i+skipCounter < Piano.numNotes-1) {
+                            nextNote = Piano.notesEntered[i + 1 + skipCounter];
+                        } else if(i + skipCounter >= Piano.numNotes-1){
+                            resolve();
+                            nextBool = true;
+                        }
+                    }
+                }
+
+                currentChord = nextChord;
+                i += skipCounter;
+            }
+
+            playQueue();
+
+            while(Piano.entered){
+                sleep();
+            }
+        }
+    }
+
+    /**
+     * Plays MediaPlayer queue
+     * Audio is broken up without it
+     */
+    public void playQueue(){
+        timeVar = Piano.timeVar / 60;
+
+        for(int i = 0; i < queue.size(); i++){
+            for(Clip mp : queue.get(i)){
+                mp.start();
+            }
+            sleep(i);
+        }
+    }
+
+    /**
+     * If a melody can't or doesn't resolve on its own, resolve() is called
+     * Finds a path from currentChord to the resolution
+     */
+    public void resolve(){
+        int rand = 0;
+        boolean next = false;
+
+        while(!next) {
+            rand = random.nextInt(chords.length);
+            next = currentChord.canGoTo[rand];
+        }
+
+        currentChord = chords[rand];
+        currentNote = currentChord.root;
+        currentChord.playChord();
+        if(currentChord != chords[0]){
+            resolve();
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * Compares next note to canGoTo values of the current Chord
+     * Returns true if at least one valid chord progression option
+     * Also updates global Chord variable nextChord, used after resolve() method call
+     * Returns false if 0 options
+     *
+     * @param current
+     * @param next
+     * @return
+     */
+    public boolean checkNextChord(Chord current, int next){
+        int rand = 0;
+        boolean returnValue = false;
+        int chordsPossible = 0;
+        Chord[] nextValues = new Chord[7];
+
+        for(int i = 1; i < Piano.numNotes; i++){
+            boolean checkChord = current.canGoTo[i];
+            if(checkChord){
+
+                if(chords[i].root == next || chords[i].third == next || chords[i].fifth == next){
+                    returnValue = true;
+                    nextValues[chordsPossible] = chords[i];
+                    chordsPossible++;
+                }
+            }
+        }
+
+        if(returnValue) {
+            rand = random.nextInt(chordsPossible);
+            nextChord = nextValues[rand];
+        } else {
+            addSingleNote(next);
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Used to store melody note in mediaPlayer alongside rest of chord
+     * Separated from playSound() because of a higher octave and higher volume
+     * @param note
+     */
+    public void playMelody(int note){
+        String noteName;
+
+        noteName = transpose.findMelodyNoteName(note);
+        try {
+            String bip = noteName + ".wav";
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(new File(bip)));
+            players.add(clip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Used to store individual notes of a chord in players, an ArrayList inside queue
+     * @param note
+     */
+    void playSound(int note) {
+        String noteName = transpose.findNoteName(note);
 
         try {
-            TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
-            targetLine.open(format);
-            targetLine.start();
-
-            SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
-            sourceLine.open(format);
-            sourceLine.start();
-
-            int numBytesRead;
-            byte[] targetData = new byte[targetLine.getBufferSize() / 5];
-
-            while (true) {
-                numBytesRead = targetLine.read(targetData, 0, targetData.length);
-
-                if (numBytesRead == -1)	break;
-
-                sourceLine.write(targetData, 0, numBytesRead);
-            }
-        }
-        catch (Exception e) {
-            System.err.println(e);
+            String bip = noteName + ".wav";
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(new File(bip)));
+            players.add(clip);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void generateString(){
-        int rand = 0;
-        do{
+    /**
+     * Used to store pickup notes in queue
+     * @param next
+     */
+    void addSingleNote(int next){
+        String noteName = transpose.findNoteName(next);
+        players = new ArrayList<Clip>();
 
-            window.chord = currentChord.state;
-            window.repaint();
-            currentChord.playChord();
-
-            boolean next = false;
-            while(!next) {
-                rand = random.nextInt(chords.length);
-                next = currentChord.canGoTo[rand];
-            }
-            currentChord = chords[rand];
-        }while(currentChord.state != 1);
-
-        window.chord = currentChord.state;
-        window.repaint();
-        currentChord.playChord();
-    }
-
-    //Calls individual methods for playing sound files
-    void playSound(int note) {
-        switch (note) {
-            case 1:
-                playC();
-                break;
-            case 2:
-                playD();
-                break;
-            case 3:
-                playE();
-                break;
-            case 4:
-                playF();
-                break;
-            case 5:
-                playG();
-                break;
-            case 6:
-                playA();
-                break;
-            case 7:
-                playB();
-                break;
+        try {
+            String bip = noteName + ".wav";
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(new File(bip)));
+            players.add(clip);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
 
-    //Individual methods for each sound file
-    void playA() {
-        System.out.println("A");
-        String note = "A";
-        playFile(note);
-    }
-
-    void playB() {
-        System.out.println("B");
-        String note = "B";
-        playFile(note);
-    }
-
-    void playBb() {
-        System.out.println("Bb");
-        String note = "Bb";
-        playFile(note);
-    }
-
-    void playC() {
-        System.out.println("C");
-        String note = "C";
-        playFile(note);
-    }
-
-    void playCs() {
-        System.out.println("C#");
-        String note = "C#";
-        playFile(note);
-    }
-
-    void playD() {
-        System.out.println("D");
-        String note = "D";
-        playFile(note);
-    }
-
-    void playE() {
-        System.out.println("E");
-        String note = "E";
-        playFile(note);
-    }
-
-    void playEb() {
-        System.out.println("Eb");
-        String note = "Eb";
-        playFile(note);
-    }
-
-    void playF() {
-        System.out.println("F");
-        String note = "F";
-        playFile(note);
-    }
-
-    void playFs() {
-        System.out.println("F#");
-        String note = "F#";
-        playFile(note);
-    }
-
-    void playG() {
-        System.out.println("G");
-        String note = "G";
-        playFile(note);
-    }
-
-    void playGs() {
-        System.out.println("G#");
-        String note = "G#";
-        playFile(note);
+        queue.add(players);
     }
 
     void error() {
-        System.out.println("ERROR");
+        System.out.print("ERROR");
     }
 
-    void sleep() {
+    public int findNumPassingTones(int index){
+        int numPass = 0;
+
+        for(int i = 1; i < queue.size() - index; i++){
+            if(queue.get(index+i).size() == 1){
+                numPass++;
+            } else {
+                return numPass;
+            }
+        }
+
+        return numPass;
+    }
+
+    /**
+     * Adjusts time delay
+     * Responds to user input and pickup notes
+     * Checks for two pickups
+     * @param index
+     */
+    void sleep(int index) {
         try {
-            TimeUnit.SECONDS.sleep(1);
+
+            if(queue.get(index).size() == 1){
+                if(numPass == 1){
+                    timeDelay = 250 / timeVar;
+                } else if(numPass > 1){
+                    timeDelay = 500 / timeVar / numPass;
+                }
+            } else{
+                numPass = findNumPassingTones(index);
+                if(numPass == 0){
+                    timeDelay = 1000 / timeVar;
+                } else if(numPass == 1){
+                    timeDelay = 750 / timeVar;
+                } else if(numPass > 1){
+                    timeDelay = 500 / timeVar;
+                }
+            }
+
+            TimeUnit.MILLISECONDS.sleep(timeDelay);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    //Actually plays sound files
-    void playFile(String note) {
-        if(style == "ClassicalMinor"){
-            switch(note){
-                case "E":
-                    note = "Eb";
-                    break;
-                case "A":
-                    note = "G#";
-                    break;
-                case "B":
-                    note = "Bb";
-                    break;
-                default:
-                    break;
-            }
-        } else if (style == "Jazz" && currentChord == chords[2]){
-            switch(note) {
-                case "G":
-                    note = "F#";
-                    break;
-            }
-        }
+    /**
+     * Only used in while loop waiting for user input
+     */
+    void sleep() {
         try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource(note + ".wav"));
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-        } catch (Exception e) {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
