@@ -6,7 +6,6 @@
  * Elaborate styles
  * Different voices
  *
- * Remove keys not in user selected key
  */
 
 import javax.sound.sampled.AudioSystem;
@@ -31,6 +30,8 @@ public class Main {
     Transposition transpose = new Transposition();
     int timeVar;
     int numPass = 0;
+    int[] roots = new int[100];
+    int numNotes = 0;
 
     List<Clip> players = new ArrayList<Clip>();
     ArrayList<List<Clip>> queue = new ArrayList<List<Clip>>();
@@ -58,8 +59,12 @@ public class Main {
         public void playChord() {
             players = new ArrayList<Clip>();
 
+            if(numNotes < 100) {
+                roots[numNotes] = root;
+                numNotes++;
+            }
+
             System.out.println("\n");
-//            System.out.println(Piano.chords);
             playSound(root);
             System.out.print(" ");
             playSound(third);
@@ -192,13 +197,6 @@ public class Main {
         }
     }
 
-    /**
-     * Methods for use with front end
-     * Untested
-     *
-     * @param originChord
-     * @param destChord
-     */
     public void addRule(Chord originChord, int destChord){
         boolean temp = chords[originChord.root].canGoTo[destChord];
 
@@ -210,30 +208,24 @@ public class Main {
         }
     }
 
-    public void removeRule(Chord originChord, int destChord){
-        boolean temp = chords[originChord.root].canGoTo[destChord];
+    public void adjustRules(){
+        for(int i = 0; i < Piano.ruleChanges.size(); i++){
+            int originChord = Piano.ruleChanges.get(i)[0];
+            int destChord = Piano.ruleChanges.get(i)[2];
+            int relationship = Piano.ruleChanges.get(i)[1];
 
-        if(temp) {
-            chords[originChord.root].canGoTo[destChord] = false;
-        } else {
-            //error
+            if(relationship == 1) {
+                chords[originChord].canGoTo[destChord] = true;
+            } else {
+                chords[originChord].canGoTo[destChord] = false;
+            }
+
+            System.out.print("\nChord " + (originChord+1) + " can ");
+            if(relationship == 0){
+                System.out.print("not ");
+            }
+            System.out.print("go to chord " + (destChord+1));
         }
-    }
-
-//    public void removeChord(Chord chord){
-//        for(int i = 0; i < chords.length; i++){
-//            chords[i].canGoTo[chord.root] = false;
-//        }
-//    }
-
-//    public void addChord(Chord chord){
-//        for(int i = 0; i < chords.length; i++){
-//            chords[i].canGoTo[chord.root] = false;
-//        }
-//    }
-
-    public void changeTempo(int time){
-        timeDelay = time;
     }
 
     /**
@@ -248,16 +240,24 @@ public class Main {
      */
     public void generateStringFromInput(){
         while(true) {
+
+            roots = new int[100];
+            numNotes = 0;
+            queue = new ArrayList<>();
+            adjustChords();
+
             while (!Piano.entered) {
-                sleep();	// until the user enters true
+                sleep();
             }
 
             for(int i = 0; i < chords.length; i++) {
-            	if(Piano.chordBools[i] == false) {
-            		chords[i].isActive = false;
-            	}
+                if(!Piano.chordBools[i]) {
+                    chords[i].isActive = false;
+                }
             }
-            
+
+            adjustRules();
+
             currentNote = Piano.notesEntered[0];
             nextNote = Piano.notesEntered[1];
 
@@ -286,20 +286,15 @@ public class Main {
             }
 
             for (int i = 0; i < Piano.numNotes; i++) {
+
                 currentNote = Piano.notesEntered[i];
 
                 if (i < Piano.numNotes - 1) {
                     nextNote = Piano.notesEntered[i + 1];
                 } else if (i == Piano.numNotes-1) {
-                    if (currentNote == 1 || currentNote == 3 || currentNote == 5) {
-                        currentChord = chords[0];
-                        currentChord.playChord();
-                        break;
-                    } else {
                         resolve();
                         System.out.print("\n\n***********");
                         i = Piano.numNotes;
-                    }
                 }
 
                 boolean nextBool = false;
@@ -325,7 +320,11 @@ public class Main {
                 i += skipCounter;
             }
 
-            playQueue();
+            if(numNotes < 100) {
+                playQueue();
+            } else {
+                System.out.println("No sequence possible");
+            }
 
             while(Piano.entered){
                 sleep();
@@ -338,6 +337,7 @@ public class Main {
      * Audio is broken up without it
      */
     public void playQueue(){
+        numNotes = 0;
         timeVar = Piano.timeVar / 60;
 
         for(int i = 0; i < queue.size(); i++){
@@ -356,18 +356,28 @@ public class Main {
         int rand = 0;
         boolean next = false;
 
-        while(!next) {
-            rand = random.nextInt(chords.length);
-            next = currentChord.canGoTo[rand];
-        }
-
-        currentChord = chords[rand];
-        currentNote = currentChord.root;
-        currentChord.playChord();
-        if(currentChord != chords[0]){
-            resolve();
+        if(currentChord.canGoTo[0] && chords[0].isActive){
+            currentChord = chords[0];
+            currentNote = currentChord.root;
+            currentChord.playChord();
         } else {
-            return;
+
+            while (!next) {
+
+                rand = random.nextInt(chords.length);
+                if (chords[rand].isActive) {
+                    next = currentChord.canGoTo[rand];
+                }
+            }
+
+            currentChord = chords[rand];
+            currentNote = currentChord.root;
+            currentChord.playChord();
+            if (currentChord != chords[0] && numNotes < 100) {
+                resolve();
+            } else {
+                return;
+            }
         }
     }
 
@@ -387,11 +397,10 @@ public class Main {
         int chordsPossible = 0;
         Chord[] nextValues = new Chord[7];
 
-        for(int i = 1; i < Piano.numNotes; i++){
+        for(int i = 1; i < 7; i++){
             boolean checkChord = current.canGoTo[i];
             if(checkChord){
-
-                if((chords[i].root == next || chords[i].third == next || chords[i].fifth == next) && chords[i].isActive) {
+                if((chords[i].root == next || chords[i].third == next || chords[i].fifth == next) && chords[i].isActive){
                     returnValue = true;
                     nextValues[chordsPossible] = chords[i];
                     chordsPossible++;
@@ -499,6 +508,10 @@ public class Main {
                     timeDelay = 500 / timeVar / numPass;
                 }
             } else{
+                window.chord = roots[numNotes];
+                numNotes++;
+                window.repaint();
+
                 numPass = findNumPassingTones(index);
                 if(numPass == 0){
                     timeDelay = 1000 / timeVar;
