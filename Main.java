@@ -6,7 +6,6 @@
  * Elaborate styles
  * Different voices
  *
- * Remove keys not in user selected key
  */
 
 import javax.sound.sampled.AudioSystem;
@@ -52,6 +51,7 @@ public class Main {
         private int root = 3;
         private int third = 5;
         private int fifth = 7;
+        private boolean isActive = true;
         private boolean[] canGoTo = new boolean[8];
 
         public void playChord() {
@@ -219,15 +219,11 @@ public class Main {
     }
 
     public void removeChord(Chord chord){
-        for(int i = 0; i < chords.length; i++){
-            chords[i].canGoTo[chord.root] = false;
-        }
+        chords[chord.root].isActive = false;
     }
 
     public void addChord(Chord chord){
-        for(int i = 0; i < chords.length; i++){
-            chords[i].canGoTo[chord.root] = false;
-        }
+        chords[chord.root].isActive = true;
     }
 
     public void changeTempo(int time){
@@ -383,7 +379,7 @@ public class Main {
             boolean checkChord = current.canGoTo[i];
             if(checkChord){
 
-                if(chords[i].root == next || chords[i].third == next || chords[i].fifth == next){
+                if((chords[i].root == next || chords[i].third == next || chords[i].fifth == next) && chords[i].isActive){
                     returnValue = true;
                     nextValues[chordsPossible] = chords[i];
                     chordsPossible++;
