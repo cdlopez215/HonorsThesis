@@ -26,7 +26,7 @@ public class Main {
     Piano keyboard = new Piano();
 
     int currentNote, nextNote;
-    Chord[] chords = new Chord[8];
+    Chord[] chords = new Chord[7];
     long timeDelay = 1;
     Transposition transpose = new Transposition();
     int timeVar;
@@ -52,12 +52,14 @@ public class Main {
         private int root = 3;
         private int third = 5;
         private int fifth = 7;
+        private boolean isActive = true;
         private boolean[] canGoTo = new boolean[8];
 
         public void playChord() {
             players = new ArrayList<Clip>();
 
             System.out.println("\n");
+//            System.out.println(Piano.chords);
             playSound(root);
             System.out.print(" ");
             playSound(third);
@@ -218,17 +220,17 @@ public class Main {
         }
     }
 
-    public void removeChord(Chord chord){
-        for(int i = 0; i < chords.length; i++){
-            chords[i].canGoTo[chord.root] = false;
-        }
-    }
+//    public void removeChord(Chord chord){
+//        for(int i = 0; i < chords.length; i++){
+//            chords[i].canGoTo[chord.root] = false;
+//        }
+//    }
 
-    public void addChord(Chord chord){
-        for(int i = 0; i < chords.length; i++){
-            chords[i].canGoTo[chord.root] = false;
-        }
-    }
+//    public void addChord(Chord chord){
+//        for(int i = 0; i < chords.length; i++){
+//            chords[i].canGoTo[chord.root] = false;
+//        }
+//    }
 
     public void changeTempo(int time){
         timeDelay = time;
@@ -247,9 +249,15 @@ public class Main {
     public void generateStringFromInput(){
         while(true) {
             while (!Piano.entered) {
-                sleep();
+                sleep();	// until the user enters true
             }
 
+            for(int i = 0; i < chords.length; i++) {
+            	if(Piano.chordBools[i] == false) {
+            		chords[i].isActive = false;
+            	}
+            }
+            
             currentNote = Piano.notesEntered[0];
             nextNote = Piano.notesEntered[1];
 
@@ -383,7 +391,7 @@ public class Main {
             boolean checkChord = current.canGoTo[i];
             if(checkChord){
 
-                if(chords[i].root == next || chords[i].third == next || chords[i].fifth == next){
+                if((chords[i].root == next || chords[i].third == next || chords[i].fifth == next) && chords[i].isActive) {
                     returnValue = true;
                     nextValues[chordsPossible] = chords[i];
                     chordsPossible++;

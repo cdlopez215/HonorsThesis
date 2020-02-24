@@ -1,5 +1,9 @@
 //import javafx.scene.media.Media;
+
 //import javafx.scene.media.MediaPlayer;
+
+
+// Added new UI workings
 
 import java.awt.Color;
 import java.awt.Component;
@@ -44,7 +48,9 @@ public class Piano implements ActionListener {
     private String[] keys = {"C", "C#", "D", "D#/Eb", "E", "F", "F#", "G", "G#/Ab", "A", "Bb", "B"};
     private String[] styles = {"Classical", "Minor Classical", "Jazz", "Blues"};
 //    private String[] chords = {"1", "2", "3", "4", "5", "6", "7"};
-    public ArrayList<Integer> chords = new ArrayList<Integer>(Arrays.asList());
+//    public static ArrayList<Integer> chords = new ArrayList<Integer>(Arrays.asList());
+    public static Boolean[] chordBools = new Boolean[7];
+//    Arrays.fill(chordBools, false);
 
     private Color customColor = new Color(42, 141, 254);
     private Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -421,28 +427,42 @@ public class Piano implements ActionListener {
         playButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		if(chord1.isSelected()) {
-        			chords.add(1);
+        			chordBools[0] = true;
+        		} else if(!chord1.isSelected()) {
+        			chordBools[0] = false;
         		}
         		if(chord2.isSelected()) {
-        			chords.add(2);
+        			chordBools[1] = true;
+        		} else if(!chord2.isSelected()) {
+        			chordBools[1] = false;
         		}
         		if(chord3.isSelected()) {
-        			chords.add(3);
+        			chordBools[2] = true;
+        		} else if(!chord3.isSelected()) {
+        			chordBools[2] = false;
         		}
         		if(chord4.isSelected()) {
-        			chords.add(4);
+        			chordBools[3] = true;
+        		} else if(!chord4.isSelected()) {
+        			chordBools[3] = false;
         		}
         		if(chord5.isSelected()) {
-        			chords.add(5);
+        			chordBools[4] = true;
+        		} else if(!chord5.isSelected()) {
+        			chordBools[4] = false;
         		}
         		if(chord6.isSelected()) {
-        			chords.add(6);
+        			chordBools[5] = true;
+        		} else if(!chord6.isSelected()) {
+        			chordBools[5] = false;
         		}
         		if(chord7.isSelected()) {
-        			chords.add(7);
+        			chordBools[6] = true;
+        		} else if(!chord7.isSelected()) {
+        			chordBools[6] = false;
         		}
         		
-        		System.out.println("here bit" + chords);
+        		System.out.println("here bit" + Arrays.deepToString(chordBools));
         	}
         	
         });
@@ -466,8 +486,9 @@ public class Piano implements ActionListener {
         		chord5.setSelected(true);
         		chord6.setSelected(true);
         		chord7.setSelected(true);
-        		chords.clear();
-        		System.out.println("here" + chords);
+//        		chordBools.clear();
+        		Arrays.fill(chordBools, false);
+        		System.out.println("here" + Arrays.toString(chordBools));
 
         	}
         	
