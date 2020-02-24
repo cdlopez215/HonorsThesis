@@ -1,5 +1,5 @@
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -18,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,6 +43,8 @@ public class Piano implements ActionListener {
     private String[] instruments = {"Piano", "Voice", "Horn", "Violin"};
     private String[] keys = {"C", "C#", "D", "D#/Eb", "E", "F", "F#", "G", "G#/Ab", "A", "Bb", "B"};
     private String[] styles = {"Classical", "Minor Classical", "Jazz", "Blues"};
+//    private String[] chords = {"1", "2", "3", "4", "5", "6", "7"};
+    public ArrayList<Integer> chords = new ArrayList<Integer>(Arrays.asList());
 
     private Color customColor = new Color(42, 141, 254);
     private Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -50,6 +55,7 @@ public class Piano implements ActionListener {
     static int numNotes = 0, transpositionKey = 0;
     static int timeVar = 120;
     String styleInput = "Classical", instrumentInput = "Piano", keyInput = "C";
+
 
     /**
      * GUI construction
@@ -72,7 +78,7 @@ public class Piano implements ActionListener {
         topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.X_AXIS));
         topPanel.setForeground(Color.WHITE);
         topPanel.setBackground(Color.GRAY);
-        topPanel.add(Box.createRigidArea(new Dimension(180,0)));
+        topPanel.add(Box.createRigidArea(new Dimension(200,0)));
 
         // Instrument label
         JLabel instrumentLabel = new JLabel("Instrument:");
@@ -150,6 +156,219 @@ public class Piano implements ActionListener {
         key.setBackground(customColor);
         topPanel.add(key);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
+        
+        // checkbox for the chords
+        JCheckBox chord1 = new JCheckBox("Chord 1");
+        chord1.setSelected(true);
+        JCheckBox chord2 = new JCheckBox("Chord 2");
+        chord2.setSelected(true);
+        JCheckBox chord3 = new JCheckBox("Chord 3");
+        chord3.setSelected(true);
+        JCheckBox chord4 = new JCheckBox("Chord 4");
+        chord4.setSelected(true);
+        JCheckBox chord5 = new JCheckBox("Chord 5");
+        chord5.setSelected(true);
+        JCheckBox chord6 = new JCheckBox("Chord 6");
+        chord6.setSelected(true);
+        JCheckBox chord7 = new JCheckBox("Chord 7");
+        chord7.setSelected(true);
+        
+//        // this is for the chord checkbox
+//        class ActionHandler1 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//        		if(!chord1.isSelected()) {
+//        			System.out.println("chord1 is deselected");
+//        			chords.remove(1);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord1.isSelected()) {
+//        			System.out.println("chord1 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 1) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 1) {
+//        					chords.add(i+1, 1);
+//        				}
+//        			}
+////        			chords.add(0, "1");
+//        			System.out.println(chords);
+//        		}
+//   
+//        	}
+//        }
+//        class ActionHandler2 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord2.isSelected()) {
+//        			System.out.println("chord2 is deselected");
+//        			chords.remove(2);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord2.isSelected()) {
+//        			System.out.println("chord2 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 2) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 2) {
+//        					chords.add(i+1, 2);
+//        				}
+//        			}
+////        			chords.add(1, "2");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        class ActionHandler3 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord3.isSelected()) {
+//        			System.out.println("chord3 is deselected");
+//        			chords.remove(3);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord3.isSelected()) {
+//        			System.out.println("chord3 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 3) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 3) {
+//        					chords.add(i+1, 3);
+//        				}
+//        			}
+////        			chords.add(2, "3");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        class ActionHandler4 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord4.isSelected()) {
+//        			System.out.println("chord4 is deselected");
+//        			chords.remove(4);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord2.isSelected()) {
+//        			System.out.println("chord4 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 4) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 4) {
+//        					chords.add(i+1, 4);
+//        				}
+//        			}
+////        			chords.add(3, "4");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        class ActionHandler5 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord2.isSelected()) {
+//        			System.out.println("chord5 is deselected");
+//        			chords.remove(5);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord2.isSelected()) {
+//        			System.out.println("chord5 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 5) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 5) {
+//        					chords.add(i+1, 5);
+//        				}
+//        			}
+////        			chords.add(4, "5");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        class ActionHandler6 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord2.isSelected()) {
+//        			System.out.println("chord6 is deselected");
+//        			chords.remove(6);
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord2.isSelected()) {
+//        			System.out.println("chord6 is selected");
+//        			for(int i = 0; i < chords.size(); i++) {
+//        				if(chords.get(i) < 6) {
+//        					continue;
+//        				} 
+//        				if(chords.get(i) > 6) {
+//        					chords.add(i+1, 6);
+//        				}
+//        			}
+////        			chords.add(5, "6");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        class ActionHandler7 implements ActionListener {
+//        	public void actionPerformed(ActionEvent e) {
+//        		JCheckBox checkbox = (JCheckBox) e.getSource();
+//
+//        		if(!chord2.isSelected()) {
+//        			System.out.println("chord7 is deselected");
+//        			chords.remove("7");
+//        			System.out.println(chords);
+//        		} 
+//        		if(chord2.isSelected()) {
+//        			System.out.println("chord7 is selected");
+////        			chords.add(6, "7");
+//        			System.out.println(chords);
+//        		}
+//
+//        	}
+//        }
+//        // add the action listeners to each
+//        ActionListener actionList1 = new ActionHandler1();
+//        ActionListener actionList2 = new ActionHandler2();
+//        ActionListener actionList3 = new ActionHandler3();
+//        ActionListener actionList4 = new ActionHandler4();
+//        ActionListener actionList5 = new ActionHandler5();
+//        ActionListener actionList6 = new ActionHandler6();
+//        ActionListener actionList7 = new ActionHandler7();
+//        chord1.addActionListener(actionList1);
+//        chord2.addActionListener(actionList2);
+//        chord3.addActionListener(actionList3);
+//        chord4.addActionListener(actionList4);
+//        chord5.addActionListener(actionList5);
+//        chord6.addActionListener(actionList6);
+//        chord7.addActionListener(actionList7);
+
+        
+
+
+        topPanel.add(chord1);
+        topPanel.add(chord2);
+        topPanel.add(chord3);
+        topPanel.add(chord4);
+        topPanel.add(chord5);
+        topPanel.add(chord6);
+        topPanel.add(chord7);
+
+        topPanel.add(Box.createRigidArea(new Dimension(20,0)));
+//        mainPanel.add(chords);
 
         // Add topPanel to mainPanel
         mainPanel.add(topPanel);
@@ -196,29 +415,79 @@ public class Piano implements ActionListener {
         JButton playButton = new JButton("Play");
         playButton.setName("play");
         playButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        playButton.setForeground(Color.WHITE);
+        playButton.setForeground(Color.BLACK);
         playButton.setBackground(Color.BLACK);
         playButton.addActionListener(this);
+        playButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(chord1.isSelected()) {
+        			chords.add(1);
+        		}
+        		if(chord2.isSelected()) {
+        			chords.add(2);
+        		}
+        		if(chord3.isSelected()) {
+        			chords.add(3);
+        		}
+        		if(chord4.isSelected()) {
+        			chords.add(4);
+        		}
+        		if(chord5.isSelected()) {
+        			chords.add(5);
+        		}
+        		if(chord6.isSelected()) {
+        			chords.add(6);
+        		}
+        		if(chord7.isSelected()) {
+        			chords.add(7);
+        		}
+        		
+        		System.out.println("here bit" + chords);
+        	}
+        	
+        });
 
         buttonPanel.add(playButton);
-        //mainPanel.add(Box.createRigidArea(new Dimension(50, 20)));
+//        mainPanel.add(Box.createRigidArea(new Dimension(50, 20)));
 
         // Create the reset button
         JButton resetButton = new JButton("Reset");
         resetButton.setName("reset");
         resetButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        resetButton.setForeground(Color.WHITE);
+        resetButton.setForeground(Color.BLACK);
         resetButton.setBackground(Color.BLACK);
         resetButton.addActionListener(this);
+        resetButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		chord1.setSelected(true);
+        		chord2.setSelected(true);
+        		chord3.setSelected(true);
+        		chord4.setSelected(true);        		
+        		chord5.setSelected(true);
+        		chord6.setSelected(true);
+        		chord7.setSelected(true);
+        		chords.clear();
+        		System.out.println("here" + chords);
+
+        	}
+        	
+        });
 
         buttonPanel.add(resetButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(50, 20)));
 
         mainPanel.add(buttonPanel);
+        
+        
+//        JPanel webChords = new JPanel();
+//
+//        mainPanel.add(webChords);
+
+        
 
         frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setSize(900,320);
+        frame.setResizable(true);
+        frame.setSize(1500,420);
 
     }
 

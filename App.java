@@ -6,7 +6,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class App extends JFrame {
     int FIRST_ROW_OFFSET;
@@ -26,7 +25,7 @@ public class App extends JFrame {
     int chord;
 
     public App() {
-        //createWindow("Thesis", 600, 600);
+//        createWindow("Thesis", 600, 600);
     }
 
     public void createWindow(String title, int width, int height) {
