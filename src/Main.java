@@ -538,10 +538,5 @@ public class Main {
         Main object = new Main();
         object.buildChords();
         object.generateStringFromInput();
-        /**object.playSound("g4");
-        object.playSound("b4");
-        object.playSound("d5");
-        object.queue.add(players);
-        object.playQueue();**/
     }
 }

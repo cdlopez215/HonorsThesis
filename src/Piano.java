@@ -55,6 +55,12 @@ public class Piano implements ActionListener {
     public static Boolean[] chordBools = new Boolean[7];
     public static ArrayList<int[]> ruleChanges = new ArrayList<>();
 
+    Color backgroundColor = Color.decode("#FAFAFB");
+    Color buttonColor = Color.decode("#E1ECF4");
+    Color actionButtonColor = Color.decode("#0095FF");
+    Color actionButtonTextColor = Color.decode("#FFFFFF");
+    Color textColor = Color.decode("#39739D");
+
     /**
      * GUI construction
      */
@@ -67,21 +73,21 @@ public class Piano implements ActionListener {
         //Main panel
         Container mainPanel = frame.getContentPane();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setForeground(Color.WHITE);
-        mainPanel.setBackground(Color.GRAY);
+        mainPanel.setForeground(textColor);
+        mainPanel.setBackground(backgroundColor);
         mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
 
-        //Panel from instrument, tempo, key, voice
+        //Panel from instrument, tempo, key, style
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.X_AXIS));
-        topPanel.setForeground(Color.WHITE);
-        topPanel.setBackground(Color.GRAY);
-        topPanel.add(Box.createRigidArea(new Dimension(180,0)));
+        topPanel.setForeground(textColor);
+        topPanel.setBackground(backgroundColor);
+        topPanel.add(Box.createRigidArea(new Dimension(10,0)));
 
         // Instrument label
         JLabel instrumentLabel = new JLabel("Instrument:");
-        instrumentLabel.setForeground(Color.WHITE);
-        instrumentLabel.setBackground(Color.BLACK);
+        instrumentLabel.setForeground(textColor);
+        instrumentLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(instrumentLabel);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -89,15 +95,16 @@ public class Piano implements ActionListener {
         instrument = new JComboBox(instruments);
         instrument.setName("instrument");
         instrument.addActionListener(this);
-        instrument.setForeground(Color.BLACK);
-        instrument.setBackground(customColor);
+        instrument.setForeground(textColor);
+        instrument.setBackground(buttonColor);
+        instrument.setFont(new Font("Arial", Font.BOLD, 20));
         topPanel.add(instrument);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
         // Style label
         JLabel styleLabel = new JLabel("Style:");
-        styleLabel.setForeground(Color.WHITE);
-        styleLabel.setBackground(Color.BLACK);
+        styleLabel.setForeground(textColor);
+        styleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(styleLabel);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -105,15 +112,16 @@ public class Piano implements ActionListener {
         style = new JComboBox(styles);
         style.setName("style");
         style.addActionListener(this);
-        style.setForeground(Color.BLACK);
-        style.setBackground(customColor);
+        style.setForeground(textColor);
+        style.setBackground(buttonColor);
+        style.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(style);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
         // Tempo label
         JLabel tempoLabel = new JLabel("Tempo:");
-        tempoLabel.setForeground(Color.WHITE);
-        tempoLabel.setBackground(Color.BLACK);
+        tempoLabel.setForeground(textColor);
+        tempoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(tempoLabel);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -134,15 +142,16 @@ public class Piano implements ActionListener {
             }
         });
         tempo.setBorder(border);
-        tempo.setForeground(Color.BLACK);
-        tempo.setBackground(customColor);
+        tempo.setForeground(textColor);
+        tempo.setBackground(buttonColor);
+        tempo.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(tempo);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
         // Key label
         JLabel keyLabel = new JLabel("Key:");
-        styleLabel.setForeground(Color.WHITE);
-        styleLabel.setBackground(Color.BLACK);
+        keyLabel.setForeground(textColor);
+        keyLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(keyLabel);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -150,8 +159,9 @@ public class Piano implements ActionListener {
         key = new JComboBox(keys);
         key.setName("key");
         key.addActionListener(this);
-        key.setForeground(Color.BLACK);
-        key.setBackground(customColor);
+        key.setForeground(textColor);
+        key.setBackground(buttonColor);
+        key.setFont(new Font("Arial", Font.PLAIN, 20));
         topPanel.add(key);
         topPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -260,14 +270,14 @@ public class Piano implements ActionListener {
         // Notes panel
         JPanel notesPanel = new JPanel();
         notesPanel.setLayout(new BoxLayout(notesPanel,BoxLayout.X_AXIS));
-        notesPanel.setForeground(Color.WHITE);
-        notesPanel.setBackground(Color.GRAY);
+        notesPanel.setForeground(textColor);
+        notesPanel.setBackground(backgroundColor);
         notesPanel.add(Box.createRigidArea(new Dimension(100, 0)));
 
         // Make notes label
         JLabel notesLabel = new JLabel("Notes:");
-        notesLabel.setForeground(Color.WHITE);
-        notesLabel.setBackground(Color.GRAY);
+        notesLabel.setForeground(textColor);
+        notesLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         notesPanel.add(notesLabel);
         notesPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
@@ -275,8 +285,9 @@ public class Piano implements ActionListener {
         entryBox = new JTextArea();
         entryBox.setBorder(border);
         entryBox.setFont(new Font("Ariel", Font.BOLD, 14));
-        entryBox.setForeground(Color.BLACK);
-        entryBox.setBackground(customColor);
+        entryBox.setForeground(textColor);
+        entryBox.setBackground(buttonColor);
+        entryBox.setFont(new Font("Arial", Font.PLAIN, 20));
         notesPanel.add(entryBox);
         notesPanel.add(Box.createRigidArea(new Dimension(100, 0)));
 
@@ -287,16 +298,17 @@ public class Piano implements ActionListener {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
-        buttonPanel.setForeground(Color.WHITE);
-        buttonPanel.setBackground(Color.GRAY);
+        buttonPanel.setForeground(textColor);
+        buttonPanel.setBackground(backgroundColor);
         buttonPanel.add(Box.createRigidArea(new Dimension(50, 20)));
 
-        // Create the reset button
+        // Create the Play button
         JButton playButton = new JButton("Play");
         playButton.setName("play");
         playButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        playButton.setForeground(Color.WHITE);
-        playButton.setBackground(Color.BLACK);
+        playButton.setForeground(actionButtonTextColor);
+        playButton.setBackground(actionButtonColor);
+        playButton.setFont(new Font("Arial", Font.PLAIN, 20));
         playButton.addActionListener(this);
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -346,8 +358,9 @@ public class Piano implements ActionListener {
         JButton resetButton = new JButton("Reset");
         resetButton.setName("reset");
         resetButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        resetButton.setForeground(Color.WHITE);
-        resetButton.setBackground(Color.BLACK);
+        resetButton.setForeground(actionButtonTextColor);
+        resetButton.setBackground(actionButtonColor);
+        resetButton.setFont(new Font("Arial", Font.PLAIN, 20));
         resetButton.addActionListener(this);
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -369,7 +382,7 @@ public class Piano implements ActionListener {
         mainPanel.add(buttonPanel);
 
         frame.setVisible(true);
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.setSize(900,420);
 
     }

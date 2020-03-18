@@ -36,6 +36,12 @@ public class App extends JPanel implements ActionListener {
     JButton jb13 = new JButton("vi");
     JButton jb14 = new JButton("vii");
 
+    Color backgroundColor = Color.decode("#FAFAFB");
+    Color buttonColor = Color.decode("#E1ECF4");
+    Color actionButtonColor = Color.decode("#0095FF");
+    Color actionButtonTextColor = Color.decode("#FFFFFF");
+    Color textColor = Color.decode("#39739D");
+
     boolean isActive[] = {true, true, true, true, true, true, true};
 
     int chord;
@@ -51,42 +57,56 @@ public class App extends JPanel implements ActionListener {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             this.setLayout(null);
-            this.setForeground(Color.WHITE);
-            this.setBackground(Color.GRAY);
+            this.setForeground(buttonColor);
+            this.setBackground(backgroundColor);
             this.add(Box.createRigidArea(new Dimension(0, 10)));
 
             //chords on left
-            jb0.setBackground(Color.BLACK);
+            jb0.setBackground(buttonColor);
+            jb0.setForeground(textColor);
+            jb0.setFont(new Font("Arial", Font.PLAIN, 40));
             jb0.setName("lc0");
             jb0.setActionCommand("lc0");
             jb0.addActionListener(this);
 
-            jb1.setBackground(Color.BLACK);
+            jb1.setBackground(buttonColor);
+            jb1.setFont(new Font("Arial", Font.PLAIN, 40));
+            jb1.setForeground(textColor);
             jb1.setName("lc1");
             jb1.setActionCommand("lc1");
             jb1.addActionListener(this);
 
-            jb2.setBackground(Color.BLACK);
+            jb2.setBackground(buttonColor);
+            jb2.setForeground(textColor);
+            jb2.setFont(new Font("Arial", Font.PLAIN, 40));
             jb2.setName("lc2");
             jb2.setActionCommand("lc2");
             jb2.addActionListener(this);
 
-            jb3.setBackground(Color.BLACK);
+            jb3.setBackground(buttonColor);
+            jb3.setForeground(textColor);
+            jb3.setFont(new Font("Arial", Font.PLAIN, 40));
             jb3.setName("lc3");
             jb3.setActionCommand("lc3");
             jb3.addActionListener(this);
 
-            jb4.setBackground(Color.BLACK);
+            jb4.setBackground(buttonColor);
+            jb4.setForeground(textColor);
+            jb4.setFont(new Font("Arial", Font.PLAIN, 40));
             jb4.setName("lc4");
             jb4.setActionCommand("lc4");
             jb4.addActionListener(this);
 
-            jb5.setBackground(Color.BLACK);
+            jb5.setBackground(buttonColor);
+            jb5.setForeground(textColor);
+            jb5.setFont(new Font("Arial", Font.PLAIN, 40));
             jb5.setName("lc5");
             jb5.setActionCommand("lc5");
             jb5.addActionListener(this);
 
-            jb6.setBackground(Color.BLACK);
+            jb6.setBackground(buttonColor);
+            jb6.setForeground(textColor);
+            jb6.setFont(new Font("Arial", Font.PLAIN, 40));
             jb6.setName("lc6");
             jb6.setActionCommand("lc6");
             jb6.addActionListener(this);
@@ -113,37 +133,51 @@ public class App extends JPanel implements ActionListener {
             this.add(jb6);
 
             //chords on right
-            jb8.setBackground(Color.BLACK);
+            jb8.setBackground(buttonColor);
+            jb8.setForeground(textColor);
+            jb8.setFont(new Font("Arial", Font.PLAIN, 40));
             jb8.setName("rc0");
             jb8.setActionCommand("rc0");
             jb8.addActionListener(this);
 
-            jb9.setBackground(Color.BLACK);
+            jb9.setBackground(buttonColor);
+            jb9.setForeground(textColor);
+            jb9.setFont(new Font("Arial", Font.PLAIN, 40));
             jb9.setName("rc1");
             jb9.setActionCommand("rc1");
             jb9.addActionListener(this);
 
-            jb10.setBackground(Color.BLACK);
+            jb10.setBackground(buttonColor);
+            jb10.setForeground(textColor);
+            jb10.setFont(new Font("Arial", Font.PLAIN, 40));
             jb10.setName("rc2");
             jb10.setActionCommand("rc2");
             jb10.addActionListener(this);
 
-            jb11.setBackground(Color.BLACK);
+            jb11.setBackground(buttonColor);
+            jb11.setForeground(textColor);
+            jb11.setFont(new Font("Arial", Font.PLAIN, 40));
             jb11.setName("rc3");
             jb11.setActionCommand("rc3");
             jb11.addActionListener(this);
 
-            jb12.setBackground(Color.BLACK);
+            jb12.setBackground(buttonColor);
+            jb12.setForeground(textColor);
+            jb12.setFont(new Font("Arial", Font.PLAIN, 40));
             jb12.setName("rc4");
             jb12.setActionCommand("rc4");
             jb12.addActionListener(this);
 
-            jb13.setBackground(Color.BLACK);
+            jb13.setBackground(buttonColor);
+            jb13.setForeground(textColor);
+            jb13.setFont(new Font("Arial", Font.PLAIN, 40));
             jb13.setName("rc5");
             jb13.setActionCommand("rc5");
             jb13.addActionListener(this);
 
-            jb14.setBackground(Color.BLACK);
+            jb14.setBackground(buttonColor);
+            jb14.setForeground(textColor);
+            jb14.setFont(new Font("Arial", Font.PLAIN, 40));
             jb14.setName("rc6");
             jb14.setActionCommand("rc6");
             jb14.addActionListener(this);
@@ -170,22 +204,38 @@ public class App extends JPanel implements ActionListener {
             this.add(jb14);
 
             JButton singleChord = new JButton("Add/Remove chord");
-            singleChord.setBackground(Color.BLACK);
+            singleChord.setBackground(actionButtonColor);
+            singleChord.setForeground(actionButtonTextColor);
+            singleChord.setFont(new Font("Arial", Font.PLAIN, 20));
             singleChord.setName("singleChord");
             singleChord.setActionCommand("singleChord");
             singleChord.addActionListener(this);
 
-            singleChord.setBounds(100, 560, 200, 25);
+            singleChord.setBounds(50, 560, 300, 25);
             this.add(singleChord);
 
             JButton doubleChord = new JButton("Add/Remove relationship");
-            doubleChord.setBackground(Color.BLACK);
+            doubleChord.setBackground(actionButtonColor);
+            doubleChord.setForeground(actionButtonTextColor);
+            doubleChord.setFont(new Font("Arial", Font.PLAIN, 20));
             doubleChord.setName("doubleChord");
             doubleChord.setActionCommand("doubleChord");
             doubleChord.addActionListener(this);
 
-            doubleChord.setBounds(100, 590, 200, 25);
+            doubleChord.setBounds(50, 590, 300, 25);
             this.add(doubleChord);
+
+            JLabel originLabel = new JLabel("Origin");
+            originLabel.setForeground(textColor);
+            originLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            originLabel.setBounds(75, 0, 100, 25);
+            this.add(originLabel);
+
+            JLabel destinationLabel = new JLabel("Destination");
+            destinationLabel.setForeground(textColor);
+            destinationLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            destinationLabel.setBounds(250, 0, 100, 25);
+            this.add(destinationLabel);
 
             frame.add(this);
             frame.setVisible(true);
@@ -301,12 +351,12 @@ public class App extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.GRAY);
+        g.setColor(backgroundColor);
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
-        g2.setStroke(new BasicStroke(3));
+        g2.setColor(textColor);
+        g2.setStroke(new BasicStroke(2));
 
         //lines
         for (int leftChord = 0; leftChord < 7; leftChord++) {
@@ -325,8 +375,8 @@ public class App extends JPanel implements ActionListener {
                     jb0.setBackground(Color.GRAY);
                     jb8.setBackground(Color.GRAY);
                 } else {
-                    jb0.setBackground(Color.BLACK);
-                    jb8.setBackground(Color.BLACK);
+                    jb0.setBackground(buttonColor);
+                    jb8.setBackground(buttonColor);
                 }
                 break;
             case 1:
@@ -334,8 +384,8 @@ public class App extends JPanel implements ActionListener {
                     jb1.setBackground(Color.GRAY);
                     jb9.setBackground(Color.GRAY);
                 } else {
-                    jb1.setBackground(Color.BLACK);
-                    jb9.setBackground(Color.BLACK);
+                    jb1.setBackground(buttonColor);
+                    jb9.setBackground(buttonColor);
                 }
                 break;
             case 2:
@@ -343,8 +393,8 @@ public class App extends JPanel implements ActionListener {
                     jb2.setBackground(Color.GRAY);
                     jb10.setBackground(Color.GRAY);
                 } else {
-                    jb2.setBackground(Color.BLACK);
-                    jb10.setBackground(Color.BLACK);
+                    jb2.setBackground(buttonColor);
+                    jb10.setBackground(buttonColor);
                 }
                 break;
             case 3:
@@ -352,8 +402,8 @@ public class App extends JPanel implements ActionListener {
                     jb3.setBackground(Color.GRAY);
                     jb11.setBackground(Color.GRAY);
                 } else {
-                    jb3.setBackground(Color.BLACK);
-                    jb11.setBackground(Color.BLACK);
+                    jb3.setBackground(buttonColor);
+                    jb11.setBackground(buttonColor);
                 }
                 break;
             case 4:
@@ -361,8 +411,8 @@ public class App extends JPanel implements ActionListener {
                     jb4.setBackground(Color.GRAY);
                     jb12.setBackground(Color.GRAY);
                 } else {
-                    jb4.setBackground(Color.BLACK);
-                    jb12.setBackground(Color.BLACK);
+                    jb4.setBackground(buttonColor);
+                    jb12.setBackground(buttonColor);
                 }
                 break;
             case 5:
@@ -370,8 +420,8 @@ public class App extends JPanel implements ActionListener {
                     jb5.setBackground(Color.GRAY);
                     jb13.setBackground(Color.GRAY);
                 } else {
-                    jb5.setBackground(Color.BLACK);
-                    jb13.setBackground(Color.BLACK);
+                    jb5.setBackground(buttonColor);
+                    jb13.setBackground(buttonColor);
                 }
                 break;
             case 6:
@@ -379,8 +429,8 @@ public class App extends JPanel implements ActionListener {
                     jb6.setBackground(Color.GRAY);
                     jb14.setBackground(Color.GRAY);
                 } else {
-                    jb6.setBackground(Color.BLACK);
-                    jb14.setBackground(Color.BLACK);
+                    jb6.setBackground(buttonColor);
+                    jb14.setBackground(buttonColor);
                 }
                 break;
         }
