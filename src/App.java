@@ -335,11 +335,11 @@ public class App extends JPanel implements ActionListener {
                 break;
             case "doubleChord":
                 if (lastSideUsed == 1) {
-                    boolean temp = canGoTo[backUp][mostRecent];
+                    boolean temp = this.canGoTo[backUp][mostRecent];
                     if (temp) {
-                        canGoTo[backUp][mostRecent] = false;
+                        this.canGoTo[backUp][mostRecent] = false;
                     } else {
-                        canGoTo[backUp][mostRecent] = true;
+                        this.canGoTo[backUp][mostRecent] = true;
                     }
                 }
                 repaint();
@@ -361,7 +361,7 @@ public class App extends JPanel implements ActionListener {
         //lines
         for (int leftChord = 0; leftChord < 7; leftChord++) {
             for (int rightChord = 0; rightChord < 7; rightChord++) {
-                if (canGoTo[leftChord][rightChord]) {
+                if (this.canGoTo[leftChord][rightChord]) {
                     g2.drawLine(COLUMN_ADJUST + (OVAL_WIDTH), ROW_ADJUST * (leftChord + 1) - 25, COLUMN_ADJUST * 5 - (OVAL_WIDTH - 10), ROW_ADJUST * (rightChord + 1) - 25);
                 }
             }

@@ -3,9 +3,6 @@
  * Dhantin Kumar
  * Spring 2020
  *
- * Elaborate styles
- * Different voices
- *
  */
 
 import javax.sound.sampled.AudioSystem;
@@ -22,7 +19,6 @@ public class Main {
     Random random = new Random();
     App window = new App();
     Chord currentChord, nextChord = new Chord();
-    //Piano keyboard = new Piano();
 
     int currentNote, nextNote;
     Chord[] chords = new Chord[7];
@@ -32,6 +28,7 @@ public class Main {
     int numPass = 0;
     int[] roots = new int[100];
     int numNotes = 0;
+    boolean first = false;
 
     static List<Clip> players = new ArrayList<Clip>();
     ArrayList<List<Clip>> queue = new ArrayList<List<Clip>>();
@@ -191,10 +188,13 @@ public class Main {
         }
 
         window.createAndShowGui();
-        for(int i = 0; i < 7; i++){
-            for(int j = 0; j < 7; j++){
-                window.canGoTo[i][j] = chords[i].canGoTo[j];
+        if(!first) {
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 7; j++) {
+                    window.canGoTo[i][j] = chords[i].canGoTo[j];
+                }
             }
+            first=true;
         }
         window.repaint();
     }
@@ -300,7 +300,7 @@ public class Main {
                         skipCounter++;
                             if(i+skipCounter < Piano.numNotes-1) {
                             nextNote = Piano.notesEntered[i + 1 + skipCounter];
-                        } else if(i + skipCounter >= Piano.numNotes-1){
+                        } else if(i + skipCounter >= Piano.numNotes-1){ //extra notes coming from calling resolve an extra time
                             resolve();
                             nextBool = true;
                         }
