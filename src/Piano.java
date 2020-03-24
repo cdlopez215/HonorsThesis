@@ -203,8 +203,8 @@ public class Piano implements ActionListener {
 
         // Origin chord label
         JLabel originChordLabel = new JLabel("Origin chord:");
-        styleLabel.setForeground(Color.WHITE);
-        styleLabel.setBackground(Color.BLACK);
+        originChordLabel.setForeground(Color.WHITE);
+        originChordLabel.setBackground(Color.BLACK);
         thirdPanel.add(originChordLabel);
         thirdPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
@@ -228,8 +228,8 @@ public class Piano implements ActionListener {
 
         // Destination chord label
         JLabel destinationChordLabel = new JLabel("Destination chord:");
-        styleLabel.setForeground(Color.WHITE);
-        styleLabel.setBackground(Color.BLACK);
+        destinationChordLabel.setForeground(Color.WHITE);
+        destinationChordLabel.setBackground(Color.BLACK);
         thirdPanel.add(destinationChordLabel);
         thirdPanel.add(Box.createRigidArea(new Dimension(20,0)));
 
