@@ -52,6 +52,7 @@ public class Main {
 
             if(numNotes < 100) {
                 roots[numNotes] = root;
+                window.roots[numNotes] = root;
                 numNotes++;
             }
 
@@ -62,7 +63,6 @@ public class Main {
             System.out.print(" ");
             playSound(fifth);
             System.out.println();
-            //playMelody(currentNote);
 
             queue.add(players);
         }
@@ -167,34 +167,17 @@ public class Main {
                 chords[5].canGoTo[3] = true;
                 //chords[6].canGoTo[0] = true;
                 chords[6].canGoTo[2] = true;
-                break;
-            case "Jazz":
-                currentChord = chords[2];
-                chords[2].canGoTo[5] = true;
-                chords[5].canGoTo[1] = true;
-                chords[1].canGoTo[4] = true;
-                chords[4].canGoTo[0] = true;
-                break;
-            case "Blues":
-                currentChord = chords[0];
-                chords[0].canGoTo[3] = true;
-                chords[3].canGoTo[0] = true;
-                chords[0].canGoTo[4] = true;
-                chords[4].canGoTo[3] = true;
-                chords[4].canGoTo[0] = true;
+                chords[0].canGoTo[0] = true;
                 break;
             default:
                 break;
         }
 
         window.createAndShowGui();
-        if(!first) {
             for (int i = 0; i < 7; i++) {
                 for (int j = 0; j < 7; j++) {
                     window.canGoTo[i][j] = chords[i].canGoTo[j];
                 }
-            }
-            first=true;
         }
         window.repaint();
     }
@@ -236,9 +219,17 @@ public class Main {
             numNotes = 0;
             queue = new ArrayList<>();
             adjustChords();
+            String oldStyle = transpose.getStyle();
 
             while (!Piano.entered) {
+                adjustRules();
                 sleep();
+
+                String style = transpose.getStyle();
+                if(style != oldStyle){
+                    oldStyle = style;
+                    adjustChords();
+                }
             }
 
             for(int i = 0; i < chords.length; i++) {
@@ -328,13 +319,13 @@ public class Main {
      * Audio is broken up without it
      */
     public void playQueue(){
+        window.fillSquares = true;
         numNotes = 0;
         timeVar = Piano.timeVar / 60;
 
-        System.out.println("Y");
-
         for(int i = 0; i < queue.size(); i++){
             for(Clip mp : queue.get(i)){
+                window.repaint();
                 mp.start();
             }
             sleep(i);

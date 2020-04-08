@@ -18,6 +18,9 @@ public class App extends JPanel implements ActionListener {
     private JFrame frame;
 
     int mostRecent = 0, backUp, lastSideUsed;
+    int[] roots = new int[100];
+    boolean fillSquares = false;
+    int numNote = 0;
 
     boolean canGoTo[][] = new boolean[7][7];
     JButton jb0 = new JButton("I");
@@ -366,6 +369,74 @@ public class App extends JPanel implements ActionListener {
                 }
             }
         }
+
+        if(fillSquares){
+            switch(roots[numNote]){
+                case 1:
+                    jb0.setBackground(textColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(buttonColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+                case 2:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(textColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(buttonColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+                case 3:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(textColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(buttonColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+                case 4:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(textColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(buttonColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+                case 5:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(textColor);
+                    jb5.setBackground(buttonColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+                case 6:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(textColor);
+                    break;
+                case 7:
+                    jb0.setBackground(buttonColor);
+                    jb1.setBackground(buttonColor);
+                    jb2.setBackground(buttonColor);
+                    jb3.setBackground(buttonColor);
+                    jb4.setBackground(buttonColor);
+                    jb5.setBackground(textColor);
+                    jb6.setBackground(buttonColor);
+                    break;
+            }
+        }
+        numNote++;
     }
 
     void updateColor() {
